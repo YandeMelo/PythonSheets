@@ -11,8 +11,16 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 # Set the log level as needed (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 logging.basicConfig(level=logging.INFO)
 
-def authenticate_google_sheets():
-    # Authenticate and authorize access to Google Sheets API.
+def calculate_passing_grade(average, situation):
+    # Calculate passing grade based on the situation.
+    if situation == "Exame Final":
+        return round(100 - average)
+    else:
+        return 0
+
+def main():
+    # Main function to update Google Sheets with evaluation results.
+    credentials = None
     if os.path.exists("token.json"):
         credentials = Credentials.from_authorized_user_file("token.json", SCOPES)
 
@@ -25,20 +33,7 @@ def authenticate_google_sheets():
 
         with open("token.json", "w") as token:
             token.write(credentials.to_json())
-
-    return credentials
-
-def calculate_passing_grade(average, situation):
-    # Calculate passing grade based on the situation.
-    if situation == "Exame Final":
-        return round(100 - average)
-    else:
-        return 0
-
-def main():
-    # Main function to update Google Sheets with evaluation results.
-    credentials = None
-    credentials = authenticate_google_sheets()
+    
 
     try:
         service = build("sheets", "v4", credentials=credentials)
